@@ -1,8 +1,4 @@
-const offset = 0
-const limit = 10
-const url = `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`
-
-//função para converter javascript em HTML
+//função para converter javascript em HTML pego do  index
 function convertPokemonToLi (pokemon) {
     return `
     <li class="pokemon">
@@ -24,12 +20,7 @@ function convertPokemonToLi (pokemon) {
 
 const pokemonList = document.getElementById('pokemonList') // pegando o id pokemonList do html e tranformando eum uma const
 
-
-pokeApi.getPokemons().then((pokemons) => { //lista de pokemon
-    for (let i = 0; i < pokemons.length; i++) { //for loop para percorrer um array
-        const pokemon = pokemons[i];
-        pokemonList.innerHTML += convertPokemonToLi(pokemon) //adiconando mais um Linha em pokemon list -- innerHTML le string em html
-
-    }
+pokeApi.getPokemons().then((pokemons = []) => { //trasnformando uma lista de pokemon em uma lista html
+    pokemonList.innerHTML +=  pokemons.map(convertPokemonToLi).join('') // pegando a lista de pokemons mapeando os pokemons ou seja converter converta para uma lista de Li - join('') junta todas a lista de Li sem carateres para separar
 })
     
