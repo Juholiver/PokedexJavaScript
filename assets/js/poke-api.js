@@ -25,7 +25,7 @@ pokeApi.getPokemonDetail = (pokemon) => {
         .then(convertPokeApiDetailToPokemon)
 
 }
-pokeApi.getPokemons = (offset =0, limit = 50) => {
+pokeApi.getPokemons = (offset =0, limit = 5) => {
     const url = `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`
     return fetch(url) // Buscando lista no servidor  = url 
         .then((response) => response.json()) //quando a promise for resolvida Convertendo o body para json 
