@@ -1,53 +1,61 @@
-const pokemonList = document.getElementById('pokemonList') // pegando o id pokemonList do html e tranformando eum uma const
+let pokemonList = document.getElementById("pokemonList")
 const loadMoreButton = document.getElementById('loadMoreButton')
+const _limit = 10
+let _offset = 0;
+const maxRecords = 151
 
-const maxRecords = 386
-const limit = 10
-let offset = 0
+function convertPokemonToHtml(pokemon) {
+    return `    
+    <li class="pokemon ${pokemon.type}" id="${pokemon.number}">
+        <div class="${pokemon.name}">
+            <div class="pokemon-header">
+                <span class="name">${pokemon.name}</span>
+                <span class="number"># ${pokemon.number}</span>
+            </div>
+            <div class="detail">
+                <ol class="types">
+                    ${pokemon.types.map((type) => `<li class="type ${type}">${type}</li>`).join('')}
+                </ol>
 
-
-
+                <img src="${pokemon.sprite}" alt="${pokemon.name}">
+            </div>
+            <div class="pokemon-mask" id=${pokemon.name}></div>
+        </div>
+    </li>
+    `
+}
 
 function loadPokemonItens(offset, limit) {
-    //função para converter javascript em HTML pego do  index
-    pokeApi.getPokemons(offset, limit).then((pokemons = []) => { //trasnformando uma lista de pokemon em uma lista html
-        const newHtml = pokemons.map((pokemon) => `
-            <li class="pokemon ${pokemon.type}">
-                <span class="number">#${pokemon.number}</span>
-                <span class="name">${pokemon.name}</span>
-                <div class="detail">
-                    <ol class="types">
-                        ${pokemon.types.map((type) => `<li class="type ${type}">${type}</li>`).join('')}
-                    </ol>
-                    
-                    <img src="${pokemon.photo}" 
-                    alt="${pokemon.name}">
-
-                </div>
-                
-            </li>
-        `).join('') // pegando a lista de pokemons mapeando os pokemons ou seja converter converta para uma lista de Li - join('') junta todas a lista de Li sem carateres para separar
-        
+    pokeApi.getPokemons(offset, limit).then((pokemons = []) => {
+        const newHtml = pokemons.map(convertPokemonToHtml).join('')  
         pokemonList.innerHTML += newHtml
     })
 }
 
-loadPokemonItens(offset, limit)
+function reloadPokemonItens(){
+    pokemonList = document.getElementById("pokemonList")
+
+    loadPokemonItens(0, 10)
+    _offset = 0
+    
+}
+
+loadPokemonItens(_offset, _limit)
 
 loadMoreButton.addEventListener('click', () => {
-    offset += limit
+    if(loadMoreButton.id === 'loadMoreButton'){
+        _offset += _limit
 
-    const qtdRecordsWithNexPage = offset + limit
+        const totalLoad = _offset + _limit
 
-    if(qtdRecordsWithNexPage >= maxRecords) {
-        const newLimit = maxRecords - offset
-        loadPokemonItens(offset, newLimit)
+        if (totalLoad >= maxRecords){
+            const newLimit = maxRecords - _offset
+            loadPokemonItens(_offset, newLimit)
 
-        loadMoreButton.parentElement.removeChild(loadMoreButton)
-    } else {
-        loadPokemonItens(offset, limit)
+            loadMoreButton.parentElement.removeChild(loadMoreButton)
+        }
+        else {
+            loadPokemonItens(_offset, _limit)
+        }
     }
-    
 })
-
-
